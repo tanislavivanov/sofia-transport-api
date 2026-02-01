@@ -1,0 +1,20 @@
+{
+  "name": "sofia-transport-api",
+  "version": "1.0.0",
+  "description": "Public JSON API for Sofia public transport (GTFS static + realtime)",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "csv-parse": "^5.5.6",
+    "express": "^4.21.1",
+    "gtfs-realtime-bindings": "^1.1.1"
+  }
+}

@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sofia Public Transport API — Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root, [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-main: #fff;
+      --surface: #f1f5f9;
+      --surface-hover: #e2e8f0;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --accent: #059669;
+      --accent-hover: #047857;
+      --get-badge: #059669;
+      --code-bg: #1e293b;
+      --code-text: #e2e8f0;
+      --key: #7dd3fc;
+      --string: #fcd34d;
+      --number: #34d399;
+      --radius: 8px;
+      --radius-sm: 6px;
+      --sidebar-bg: #f1f5f9;
+      --nav-active-bg: #e0f2fe;
+      --nav-active-border: #0284c7;
+      --inline-code-bg: #e2e8f0;
+      /* Code block syntax – avoid selection-like blue; no background */
+      --syntax-key: #6366f1;
+      --syntax-string: #b45309;
+      --syntax-number: #047857;
+      --syntax-null: #64748b;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --bg-main: #1e293b;
+      --surface: #334155;
+      --surface-hover: #475569;
+      --border: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #22c55e;
+      --accent-hover: #16a34a;
+      --get-badge: #059669;
+      --code-bg: #0f172a;
+      --code-text: #e2e8f0;
+      --key: #7dd3fc;
+      --string: #fcd34d;
+      --number: #34d399;
+      --sidebar-bg: #1e293b;
+      --nav-active-bg: #1e3a5f;
+      --nav-active-border: #0ea5e9;
+      --inline-code-bg: #334155;
+      --syntax-key: #7dd3fc;
+      --syntax-string: #fcd34d;
+      --syntax-number: #34d399;
+      --syntax-null: #94a3b8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text);
+    }
+
+    .nav-section {
+      padding: 0.75rem 0;
+    }
+
+    .nav-section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding: 0 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background: var(--surface-hover);
+    }
+
+    .nav-item.active {
+      background: var(--nav-active-bg);
+      border-left-color: var(--nav-active-border);
+      color: var(--nav-active-border);
+      font-weight: 500;
+    }
+
+    .nav-item .method {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      background: var(--get-badge);
+      color: #fff;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .nav-item .label {
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Theme toggle */
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text);
+      font-size: 0.8rem;
+      cursor: pointer;
+      width: 100%;
+      font-family: inherit;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--surface-hover);
+      border-color: var(--text-muted);
+    }
+
+    .theme-toggle .icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .github-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      border-radius: var(--radius-sm);
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .github-link:hover {
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+
+    .github-link svg {
+      flex-shrink: 0;
+    }
+
+    .github-link .external {
+      margin-left: auto;
+      opacity: 0.7;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      min-width: 0;
+      padding: 2rem 2.5rem 4rem;
+      overflow-y: auto;
+    }
+
+    .main-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .main-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .version-badge {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: var(--get-badge);
+      color: #fff;
+    }
+
+    .content-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .content-section h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 0.75rem;
+      color: var(--text);
+    }
+
+    .content-section h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.5rem;
+      color: var(--text);
+    }
+
+    .content-section p {
+      margin: 0 0 0.75rem;
+      color: var(--text-muted);
+      max-width: 65ch;
+    }
+
+    .content-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .url-box {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-sm);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      margin: 0.75rem 0;
+    }
+
+    .url-box strong {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+
+    .info-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+    }
+
+    .info-box p {
+      margin: 0 0 0.5rem;
+      color: var(--text);
+    }
+
+    .info-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-box code, .content-section code {
+      background: var(--inline-code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+
+    .links-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .links-list a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .links-list a:hover {
+      text-decoration: underline;
+    }
+
+    /* Endpoint section in main */
+    .endpoint-section {
+      scroll-margin-top: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .endpoint-section .endpoint-head {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+
+    .endpoint-section .method {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      background: var(--get-badge);
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .endpoint-section .path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .endpoint-section .path .param {
+      color: var(--accent);
+    }
+
+    .endpoint-section .description {
+      color: var(--text-muted);
+      margin: 0.75rem 0 1rem;
+      max-width: 65ch;
+    }
+
+    .endpoint-section .try-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.9rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .endpoint-section .try-link:hover {
+      text-decoration: underline;
+    }
+
+    .example-wrap {
+      margin-top: 0.75rem;
+    }
+
+    .example-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .copy-btn {
+      font-family: inherit;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .copy-btn.copied {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    pre {
+      margin: 0;
+      padding: 1rem;
+      background: var(--code-bg);
+      border-radius: var(--radius-sm);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+
+    pre code {
+      color: var(--code-text);
+      background: transparent !important;
+    }
+
+    /* No background on any syntax spans – only text color (avoids “always highlighted” look) */
+    pre code .json-key,
+    pre code .json-string,
+    pre code .json-number,
+    pre code .json-null {
+      background: transparent !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .json-key { color: var(--syntax-key); }
+    .json-string { color: var(--syntax-string); }
+    .json-number { color: var(--syntax-number); }
+    .json-null { color: var(--syntax-null); }
+
+    #loading, #error {
+      padding: 3rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    #error { color: #dc2626; }
+
+    @media (max-width: 768px) {
+      .layout { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      .main { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1 class="sidebar-title" id="sidebar-title">Sofia Transport API</h1>
+      </div>
+      <nav class="nav-section">
+        <div class="nav-section-title">Overview</div>
+        <a href="#overview" class="nav-item active" data-nav="overview">Overview</a>
+      </nav>
+      <nav class="nav-section">
+        <div class="nav-section-title">Endpoints</div>
+        <div id="nav-endpoints"></div>
+      </nav>
+      <div class="sidebar-footer">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">🌙</span>
+          <span id="theme-label">Dark mode</span>
+        </button>
+        <a href="https://github.com/tanislavivanov/sofia-transport-api/" target="_blank" rel="noopener noreferrer" class="github-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>View on GitHub</span>
+          <svg class="external" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+        </a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div id="loading" class="loading">Loading documentation…</div>
+      <div id="error" class="error" style="display: none;"></div>
+      <div id="content" style="display: none;">
+        <section id="overview" class="content-section">
+          <div class="main-header">
+            <h1 class="main-title" id="main-title">Sofia Public Transport API <span class="version-badge" id="version">v1.0.0</span></h1>
+          </div>
+          <h2>API Base URL</h2>
+          <p>All endpoints are relative to your deployment. When running locally, the base URL is:</p>
+          <div class="url-box" id="base-url-box">
+            <strong>Current origin</strong><br />
+            <span id="base-url">https://your-server.example.com</span>
+          </div>
+          <p>Replace with your own domain when you deploy. There is no separate sandbox; use the same base URL for all requests.</p>
+
+          <h2>Authentication</h2>
+          <div class="info-box">
+            <p><strong>No API key required.</strong> All endpoints are public. Simply send a request to the base URL and path; no headers or query parameters are needed for authentication.</p>
+            <p>Example: <code>GET /api/stops</code> returns the full list of stops with no authentication.</p>
+          </div>
+
+          <h2>About this API</h2>
+          <p id="tagline">Public JSON API for Sofia public transport (buses, trams, trolleys).</p>
+          <p>This API serves <strong>GTFS static</strong> (stops, routes, trips) and <strong>GTFS Realtime</strong> (trip updates, predicted arrivals) data from the Sofia Urban Mobility Centre. Data is fetched from <code>gtfs.sofiatraffic.bg</code> and cached: static data for about 30 days, realtime data for about 1 minute.</p>
+          <p>All responses are <strong>JSON</strong>. <strong>CORS</strong> is enabled for all origins. No API key or authentication is required. Stop lookups use the public <strong>stop code</strong> (e.g. <code>1708</code>). When multiple GTFS stop IDs share the same code (e.g. bus and trolley at the same stop), the API merges them into a single stop and combines arrivals.</p>
+
+          <h2>Additional information</h2>
+          <ul class="links-list">
+            <li><a href="https://gtfs.sofiatraffic.bg" target="_blank" rel="noopener">GTFS data source (Sofia Traffic)</a></li>
+            <li><a href="/api" target="_blank" rel="noopener">Raw API docs (JSON)</a></li>
+          </ul>
+          <p id="cache-note" style="margin-top: 1rem; font-size: 0.9rem;"></p>
+        </section>
+        <div id="endpoint-sections"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function escapeHtml(s) {
+      const div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    function highlightJson(jsonStr) {
+      // 1) Wrap values: quoted strings, numbers, null/boolean
+      let out = jsonStr.replace(
+        /("(?:[^"\\]|\\.)*"|\b(true|false|null)\b|-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g,
+        (m) => {
+          if (m.startsWith('"')) return '<span class="json-string">' + escapeHtml(m) + '</span>';
+          if (m === 'true' || m === 'false' || m === 'null') return '<span class="json-null">' + m + '</span>';
+          return '<span class="json-number">' + m + '</span>';
+        }
+      );
+      // 2) Turn key spans from json-string to json-key (key is always followed by colon)
+      out = out.replace(
+        /<span class="json-string">([^<]*)<\/span>(?=:)/g,
+        (_, inner) => '<span class="json-key">' + inner + '</span>'
+      );
+      return out;
+    }
+
+    let exampleStrings = [];
+
+    const endpointExplanations = {
+      'GET /api': 'Returns this documentation in JSON form, including all endpoint paths and example response shapes. Useful for tooling or generating clients.',
+      'GET /api/stops': 'Returns every stop from the GTFS static feed. Each stop has an id (GTFS stop_id), code (public stop code), name, coordinates, and title. Use this list to discover stop codes for use in the stop and arrivals endpoints.',
+      'GET /api/stops/:code': 'Returns a single stop by its public stop code (e.g. 1708). If several GTFS stop IDs share the same code (e.g. bus A1708 and trolley TB1708 at the same location), the response merges them: one name and coordinates, plus a stopIds array listing all GTFS IDs for that code.',
+      'GET /api/stops/:code/arrivals': 'Returns predicted arrivals at the stop identified by stop code. Arrivals are merged from all GTFS stop IDs with that code, sorted by time. Use the limit query parameter (1–100, default 20) to control how many predictions are returned.',
+      'GET /api/routes': 'Returns all routes from GTFS routes.txt (route_id, route_short_name, route_long_name). Useful for mapping route IDs to human-readable names.',
+      'GET /api/trips': 'Returns all trips from GTFS trips.txt (trip_id, route_id, trip_headsign).',
+      'GET /api/trip-lookup': 'Returns a map of trip_id to route display info (routeShortName, headsign). Use this to enrich realtime trip-updates with human-readable route names.',
+      'GET /api/trip-updates': 'Returns the raw GTFS Realtime trip-updates feed as parsed JSON. Each entity has tripId, routeId, timestamp, and stopTimeUpdates (stopId, arrival/departure times and delays).',
+    };
+
+    function slug(path) {
+      return path.replace(/\/api\/?/g, '').replace(/[^a-z0-9]/gi, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'index';
+    }
+
+    function renderEndpointSection(ep, example, index) {
+      const pathHtml = escapeHtml(ep.path).replace(/:(\w+)/g, '<span class="param">:$1</span>');
+      const tryPath = ep.path.replace(/:code/g, '1708').replace(/:(\w+)/g, '1234');
+      const tryUrl = window.location.origin + tryPath;
+      const id = 'ep-' + slug(ep.path);
+      const explanation = endpointExplanations[ep.method + ' ' + ep.path] || ep.summary;
+
+      let exampleBlock = '';
+      if (example) {
+        const jsonStr = JSON.stringify(example, null, 2);
+        const idx = exampleStrings.length;
+        exampleStrings.push(jsonStr);
+        const highlighted = highlightJson(jsonStr);
+        exampleBlock = `
+          <div class="example-wrap">
+            <div class="example-header">
+              <span>Example response</span>
+              <button type="button" class="copy-btn" data-example-idx="${idx}">Copy JSON</button>
+            </div>
+            <pre><code>${highlighted}</code></pre>
+          </div>
+        `;
+      }
+
+      return `
+        <section id="${id}" class="endpoint-section content-section" data-endpoint-index="${index}">
+          <div class="endpoint-head">
+            <span class="method">${escapeHtml(ep.method)}</span>
+            <span class="path">${pathHtml}</span>
+          </div>
+          <p class="description">${escapeHtml(explanation)}</p>
+          <a href="${tryUrl}" target="_blank" rel="noopener" class="try-link">Try it →</a>
+          ${exampleBlock}
+        </section>
+      `;
+    }
+
+    function renderNavItem(ep, index) {
+      const id = 'ep-' + slug(ep.path);
+      const label = ep.path.replace(/^\/api/, '') || '/';
+      return `<a href="#${id}" class="nav-item" data-nav="${id}"><span class="method">${escapeHtml(ep.method)}</span><span class="label">${escapeHtml(label)}</span></a>`;
+    }
+
+    function bindCopyButtons() {
+      document.querySelectorAll('.copy-btn[data-example-idx]').forEach((btn) => {
+        const idx = parseInt(btn.getAttribute('data-example-idx'), 10);
+        const text = exampleStrings[idx];
+        if (!text) return;
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(text).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = 'Copy JSON'; btn.classList.remove('copied'); }, 2000);
+          });
+        });
+      });
+    }
+
+    function setActiveNav(id) {
+      document.querySelectorAll('.nav-item').forEach((el) => {
+        el.classList.toggle('active', el.getAttribute('data-nav') === id);
+      });
+    }
+
+    function initScrollSpy() {
+      const sections = document.querySelectorAll('.content-section, .endpoint-section');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            const id = e.target.id;
+            if (id) setActiveNav(id);
+          }
+        },
+        { rootMargin: '-80px 0px -60% 0px', threshold: 0 }
+      );
+      sections.forEach((s) => observer.observe(s));
+    }
+
+    function initNavClick() {
+      document.querySelectorAll('.nav-item').forEach((el) => {
+        el.addEventListener('click', (e) => {
+          const nav = el.getAttribute('data-nav');
+          if (nav) setActiveNav(nav);
+        });
+      });
+    }
+
+    function initTheme() {
+      const stored = localStorage.getItem('api-docs-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const dark = stored === 'dark' || (!stored && prefersDark);
+      document.body.setAttribute('data-theme', dark ? 'dark' : 'light');
+      updateThemeButton(dark);
+    }
+
+    function updateThemeButton(dark) {
+      const icon = $('theme-icon');
+      const label = $('theme-label');
+      if (icon) icon.textContent = dark ? '☀️' : '🌙';
+      if (label) label.textContent = dark ? 'Light mode' : 'Dark mode';
+    }
+
+    $('theme-toggle')?.addEventListener('click', () => {
+      const dark = document.body.getAttribute('data-theme') === 'dark';
+      const next = !dark;
+      document.body.setAttribute('data-theme', next ? 'dark' : 'light');
+      localStorage.setItem('api-docs-theme', next ? 'dark' : 'light');
+      updateThemeButton(next);
+    });
+
+    async function loadDocs() {
+      try {
+        const res = await fetch('/api');
+        if (!res.ok) throw new Error(res.statusText);
+        const api = await res.json();
+
+        $('loading').style.display = 'none';
+        $('content').style.display = 'block';
+
+        if (api.version) $('version').textContent = 'v' + api.version;
+        if (api.description) $('tagline').textContent = api.description;
+        if (api.cacheNote) $('cache-note').textContent = api.cacheNote;
+        $('base-url').textContent = window.location.origin;
+
+        const endpoints = api.endpoints || [];
+        const examples = api.examples || {};
+
+        const navHtml = endpoints.map((ep, i) => renderNavItem(ep, i)).join('');
+        $('nav-endpoints').innerHTML = navHtml;
+
+        const sectionsHtml = endpoints.map((ep, i) => {
+          const exampleKey = ep.method + ' ' + ep.path;
+          return renderEndpointSection(ep, examples[exampleKey], i);
+        }).join('');
+        $('endpoint-sections').innerHTML = sectionsHtml;
+
+        bindCopyButtons();
+        initNavClick();
+        initScrollSpy();
+      } catch (err) {
+        $('loading').style.display = 'none';
+        $('error').style.display = 'block';
+        $('error').textContent = 'Could not load docs: ' + err.message;
+      }
+    }
+
+    initTheme();
+    loadDocs();
+  </script>
+</body>
+</html>
